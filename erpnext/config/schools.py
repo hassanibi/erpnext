@@ -153,6 +153,10 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Student Payment"
+				},
+				{
+					"type": "doctype",
 					"name": "Fees"
 				},
 				{
