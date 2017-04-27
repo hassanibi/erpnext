@@ -172,6 +172,12 @@ def get_data():
 					"name": "Student Fee Collection",
 					"doctype": "Fees",
 					"is_query_report": True
+				},
+				{
+					"type": "report",
+					"name": "Student Payment Collection",
+					"doctype": "Student Payment",
+					"is_query_report": True
 				}
 			]
 		},
