@@ -82,6 +82,7 @@ frappe.ui.form.on("Fees", {
 					}
 					refresh_field("components");
 					frm.trigger("calculate_total_amount");
+					frm.trigger("update_fees_category");
 				}
 			});
 		}
@@ -93,11 +94,30 @@ frappe.ui.form.on("Fees", {
 			total_amount += frm.doc.components[i].amount;
 		}
 		frm.set_value("total_amount", total_amount);
-	}
+	},
+	
+	update_fees_category: function (frm) {
+		var fees_category = [];
+		for(var i=0;i<frm.doc.components.length;i++) {
+			fees_category.push(frm.doc.components[i].fees_category);
+		}
+		frm.set_value("fees_category", fees_category.join(","));
+    }
+	
+	
 });
 
 frappe.ui.form.on("Fee Component", {
 	amount: function(frm) {
 		frm.trigger("calculate_total_amount");
-	}
+		frm.trigger("update_fees_category");
+	},
+
+	components_add: function (frm) {
+		frm.trigger("update_fees_category");
+    },
+
+    components_remove: function (frm) {
+		frm.trigger("update_fees_category");
+    }
 });
