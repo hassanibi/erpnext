@@ -87,6 +87,10 @@ frappe.ui.form.on("Fees", {
 			});
 		}
 	},
+
+	due_date: function(frm) {
+		frm.trigger("update_fees_category");
+    },
 	
 	calculate_total_amount: function(frm) {
 		total_amount = 0;
@@ -101,7 +105,7 @@ frappe.ui.form.on("Fees", {
 		for(var i=0;i<frm.doc.components.length;i++) {
 			fees_category.push(frm.doc.components[i].fees_category);
 		}
-		frm.set_value("fees_category", fees_category.join(","));
+		frm.set_value("fees_category", fees_category.join(",") + (frm.doc.due_date ? " / " + frm.doc.due_date : ""));
     }
 	
 	

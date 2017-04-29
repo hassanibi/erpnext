@@ -43,7 +43,7 @@ frappe.ui.form.on('Student Payment', {
 							row.fees = d.name;
 							row.fees_category = d.fees_category;
 							row.total_amount = d.total_amount;
-							row.paid_amount = d.paid_amount;
+							row.paid_amount = d.paid_amount
 							row.outstanding_amount = d.outstanding_amount;
 						});
 					}
@@ -69,9 +69,9 @@ frappe.ui.form.on('Student Payment', {
 
 frappe.ui.form.on("Payment Component", {
 	paid_amount: function(frm, cdt, cdn) {
-		frm.trigger("calculate_total_amount");
-
 		var d = locals[cdt][cdn];
+		frm.trigger("calculate_total_amount");
 		frappe.model.set_value(cdt, cdn, "outstanding_amount", flt(d.total_amount - d.paid_amount));
 	}
+
 });
