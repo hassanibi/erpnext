@@ -18,15 +18,20 @@ def execute(filters=None):
 	students_payments = get_students_payments(filters.get("date"))
 	for student_payment in students_payments:
 		row = [student_payment.student]
-		row += [student_payment.student_name, student_payment.payment_date, student_payment.total_amount]
+		payment_components = frappe.db.sql("""select fees_category from `tabPayment Component` 
+				where parent = %s""", (student_payment.name), as_dict=1)
+		fees_categories = ""
+		for payment_component in payment_components:
+			fees_categories += payment_component.fees_category + "<br/>"
+		row += [student_payment.student_name, fees_categories, student_payment.payment_date, student_payment.total_amount, student_payment.paid_amount]
 		data.append(row)
 
 	chart = get_chart_data(columns)
 
-	return columns, data, _(''), chart
+	return columns, data, _('')#, chart
 
 def get_students_payments(date):
-	students_payments = frappe.db.sql("""select student, student_name, payment_date, total_amount from `tabStudent Payment` 
+	students_payments = frappe.db.sql("""select name, student, student_name, payment_date, total_amount, paid_amount from `tabStudent Payment` 
 		where payment_date= %s order by student""", (date), as_dict=1)
 	return students_payments
 
@@ -34,8 +39,10 @@ def get_columns(filters):
 	columns = [
 		_("Student") + ":Link/Student:250",
 		_("Student Name") + "::200",
+		_("Fees Category") + "::200",
 		_("Payment Date") + ":Date:90",
-		_("Total Amount") + ":Currency:90"
+		_("Total Amount") + ":Currency:90",
+		_("Paid Amount") + ":Currency:90"
 	]
 	return columns
 
