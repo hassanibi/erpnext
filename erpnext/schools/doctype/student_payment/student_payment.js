@@ -43,8 +43,8 @@ frappe.ui.form.on('Student Payment', {
 							row.fees = d.name;
 							row.fees_category = d.fees_category;
 							row.total_amount = d.total_amount;
-							row.paid_amount = d.paid_amount
-							row.outstanding_amount = d.outstanding_amount;
+							row.received_amount = 0;
+							row.outstanding = d.outstanding_amount;
 						});
 					}
 					refresh_field("components");
@@ -56,22 +56,23 @@ frappe.ui.form.on('Student Payment', {
 
 	calculate_total_amount: function(frm, cdt, cdn) {
 		total_amount = 0;
-		paid_amount = 0;
+		received_amount = 0;
+		outstanding = 0;
 		for(var i=0;i<frm.doc.components.length;i++) {
 			total_amount += flt(frm.doc.components[i].total_amount);
-			paid_amount += flt(frm.doc.components[i].paid_amount);
+			received_amount += flt(frm.doc.components[i].received_amount);
+			outstanding += flt(frm.doc.components[i].outstanding);
 		}
 		frm.set_value("total_amount", total_amount);
-		frm.set_value("paid_amount", paid_amount);
-		frm.set_value("outstanding_amount", flt(total_amount - paid_amount));
+		frm.set_value("received_amount", received_amount);
+		frm.set_value("outstanding", outstanding);
 	}
 });
 
 frappe.ui.form.on("Payment Component", {
-	paid_amount: function(frm, cdt, cdn) {
+	received_amount: function(frm, cdt, cdn) {
 		var d = locals[cdt][cdn];
 		frm.trigger("calculate_total_amount");
-		frappe.model.set_value(cdt, cdn, "outstanding_amount", flt(d.total_amount - d.paid_amount));
 	}
 
 });

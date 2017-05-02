@@ -10,18 +10,17 @@ from frappe import _
 
 class StudentPayment(Document):
 	def validate(self):
-		paid_amount = 0
+		received_amount = 0
 		for d in self.components:
-			paid_amount =  paid_amount + flt(frappe.db.get_value("Fees", d.fees, "paid_amount"))
-		if paid_amount == self.paid_amount:
+			received_amount =  received_amount + flt(frappe.db.get_value("Fees", d.fees, "paid_amount"))
+		if received_amount == self.received_amount:
 			frappe.throw(_("Enter Paid Amount"));
 
 
 	def on_submit(self):
 		from erpnext.schools.api import collect_fees
 		for d in self.components:
-			paid_amount = flt(d.paid_amount) - flt(frappe.db.get_value("Fees", d.fees, "paid_amount"))
-			collect_fees(d.fees, paid_amount)
+			collect_fees(d.fees, d.received_amount)
 
 
 @frappe.whitelist()
